@@ -1,116 +1,171 @@
-## 智能 UI 设计导师（Vite + React + Konva + Grok）
+# ✨ Intelligent UI Helper / 智能 UI 导师
 
-这是一个**可运行的完整项目**：你在左侧输入产品/页面需求，点击生成后，后端会调用 **xAI Grok API** 返回**结构化 JSON（严格按 Zod schema 校验）**，前端使用 **React-Konva** 将其渲染为可拖拽/可选中的画布布局，并在右侧提供检查器、JSON 与“导师建议”。
+**English** · A workspace that ships a **Figma plugin** powered by **Qwen** on **SiliconFlow**, plus an optional **web** UI tutor (Vite + React + Konva + Express).
 
-### 技术栈
+**中文** · 本仓库包含：基于 **硅基流动 SiliconFlow + Qwen** 的 **Figma 插件**，以及可选的 **Web 画布导师**（Vite + React + Konva + Express）。
 
-- **前端**：Vite + React 18 + TypeScript + TailwindCSS + shadcn/ui（本项目内置了常用组件代码）
-- **画布**：React-Konva + Konva
-- **后端**：Node + Express（安全代理调用 xAI，避免在浏览器暴露 API Key）
-- **结构化输出**：Zod + function calling（优先使用 xAI `Responses API`，必要时回退 `chat/completions`）
+| | **English** | **中文** |
+|---|-------------|----------|
+| **Primary focus** | Figma plugin: chat, text-to-image, image edit | Figma 插件：对话、文生图、图像编辑 |
+| **LLM (plugin)** | Qwen via SiliconFlow API | 通过 SiliconFlow 调用 Qwen 系列模型 |
 
-### 目录结构（关键）
+---
 
+## 📖 Introduction / 简介
+
+### Figma plugin (`figma-ui-tutor/`) · Figma 插件
+
+**EN** · The plugin UI runs in `ui-v3.html`. The main thread (`code.js`) exports selected layers as PNG, calls SiliconFlow **without browser CORS issues**, and supports bilingual UI (中文 / English).
+
+**中文** · 界面在 `ui-v3.html`，主线程 `code.js` 负责导出选中图层、发起网络请求（绕过 iframe 的 CORS），并支持中英界面切换。
+
+### Web app (repo root) · Web 应用（根目录）
+
+**EN** · `package.json` defines a Vite + React frontend and an Express server (`server/`). The server currently proxies **xAI Grok** for structured UI generation—**separate** from the Figma plugin’s SiliconFlow setup. Use `npm run dev` to run both.
+
+**中文** · 根目录 `package.json` 为 **Vite + React** 前端与 **Express** 后端（`server/`）。后端当前对接 **xAI Grok** 做结构化 UI 生成，与 Figma 插件的 **SiliconFlow** 配置**相互独立**。使用 `npm run dev` 同时启动前后端。
+
+---
+
+## ✨ Features / 特性
+
+| Feature | EN | 中文 |
+|---------|----|------|
+| 💬 Chat | UI/UX mentor-style Q&A (Qwen chat model) | 设计导师式问答（Qwen 对话模型） |
+| 🎨 Text-to-image | `/v1/images/generations` with T2I model | 文生图接口与文生图模型 |
+| 🖼️ Image edit | Base64 PNG + JSON body from main thread | 主线程 JSON + Base64 图生图/编辑 |
+| 🌐 i18n | Toggle 中文 / English in header | 标题栏切换中英 |
+| ⚙️ Settings | API Key, Base URL, chat / T2I / I2I model IDs | API Key、Base URL、对话/文生图/图生图模型 |
+
+---
+
+## 🔑 SiliconFlow · Qwen (Figma plugin defaults) · 插件默认配置
+
+**Default chat Base URL (also used to derive image endpoints)** · **默认对话 Base URL（生图 URL 由此推导）**
+
+```text
+https://api.siliconflow.cn/v1/chat/completions
 ```
-.
-├─ server/                # Express 代理服务
-├─ shared/                # 前后端共用：schema/types + prompts
-├─ src/                   # React 前端
-└─ .env.example           # 环境变量模板（含 Grok API Key）
+
+**Default test API Key** · **默认测试 API Key**（⚠️ rotate if leaked · 泄露请尽快轮换）
+
+```text
+sk-yllgcljmiwlyxxyqpkuwyuyysbjuifthhsatfqccorotccqc
 ```
 
-### 1) 准备环境
+**Docs** · **文档**：[SiliconFlow API](https://docs.siliconflow.cn/) · [Models](https://cloud.siliconflow.cn/me/models)
 
-- **Node.js**：建议 Node 18+（需要内置 `fetch`）
+**Typical model IDs** · **常用模型示例**
 
-### 2) 配置 Grok API Key（必做）
+| Role | Example ID | 说明 |
+|------|------------|------|
+| Chat | `Qwen/Qwen2.5-7B-Instruct` | 纯文本对话 |
+| Text-to-image | `Qwen/Qwen-Image` | 文生图 |
+| Image edit | `Qwen/Qwen-Image-Edit-2509` | 图生图 / 编辑 |
 
-1. 复制环境变量模板：
+---
+
+## 🚀 Quick start / 快速开始
+
+### A) Figma plugin · Figma 插件
+
+**EN**
+
+1. Open Figma → **Plugins** → **Development** → **Import plugin from manifest…**
+2. Pick `figma-ui-tutor/manifest.json`
+3. Run the plugin → **Settings** → paste API Key & adjust models if needed
+4. After editing files: **Plugins** → **Development** → **Reload** (or reopen plugin)
+
+**中文**
+
+1. Figma → **插件** → **开发** → **从清单导入插件…**
+2. 选择 `figma-ui-tutor/manifest.json`
+3. 运行插件 → **设置** → 填写 API Key，按需调整模型
+4. 改代码后：**插件** → **开发** → **重新加载**
+
+### B) Web app (optional) · Web 应用（可选）
+
+**EN** · Requires Node **18+**.
 
 ```bash
-copy .env.example .env
-```
-
-2. 编辑根目录 `.env`，填入你的 Key：
-
-```bash
-XAI_API_KEY=xxxxxxxxxxxxxxxx
-```
-
-- **获取 API Key**：在 xAI 控制台创建 Key（参考：`https://console.x.ai/team/default/api-keys`）
-
-### 3) 安装依赖与启动开发环境
-
-```bash
+cd Intelligent-UI-Helper
 npm install
+copy .env.example .env   # Windows; use cp on macOS/Linux
+# Edit .env for server (see .env.example — Grok / xAI for this stack)
 npm run dev
 ```
 
-默认会同时启动：
+- Frontend · 前端：`http://localhost:5173` (proxied `/api/*` to server)
+- API · 接口：`http://localhost:8787` (see `server/index.ts`)
 
-- **前端**：`http://localhost:5173`
-- **后端**：`http://localhost:8787`（前端通过 Vite proxy 访问 `/api/*`）
+**中文** · 需要 Node **18+**。安装依赖后复制 `.env.example` 为 `.env` 并配置后端密钥，再执行 `npm run dev`。
 
-### 4) 构建与生产启动
+---
 
-```bash
-npm run build
-npm start
+## 📝 Usage examples / 使用示例
+
+**Figma · Chat** · “Recommend an eye-friendly dark palette for a dashboard.” / “给仪表盘推荐一套护眼的深色配色。”
+
+**Figma · Image** · “Minimal mobile settings screen, light mode.” / “简洁的移动端设置页，浅色模式。”
+
+**Figma · Edit** · Select a frame → **Extract layer** → “Change background to snowy mountains.” / 选中图层 → **提取选中图层** → “把背景换成雪山。”
+
+**Web** · Fill the form in the left panel → **Generate** → inspect canvas / JSON / tutor panel on the right.
+
+---
+
+## 📁 Project structure / 项目结构
+
+```text
+Intelligent-UI-Helper/
+├── package.json              # Web: scripts, Vite + React + Express deps
+├── vite.config.ts            # Web frontend bundler (if present)
+├── server/                   # Express API (Grok client for web flow)
+├── src/                      # React + Konva UI (web)
+├── shared/                   # Zod schemas & prompts (web)
+├── figma-ui-tutor/
+│   ├── manifest.json         # Figma: main=code.js, ui=ui-v3.html
+│   ├── code.js               # Main thread: fetch, export PNG, notify
+│   └── ui-v3.html            # Plugin UI + SiliconFlow / Qwen logic
+└── README.md                 # This file / 本说明
 ```
 
-然后访问：
+---
 
-- `http://localhost:8787`
+## 🛠 Tech stack / 技术栈
 
-### API 说明
+| Layer | EN | 中文 |
+|-------|----|------|
+| Figma | Plugin API, `fetch` in main, `figma.base64Encode` | Figma 插件 API，主线程请求，Base64 编码 |
+| Figma UI | HTML + Tailwind (CDN) + `marked` | HTML + Tailwind CDN + Markdown 渲染 |
+| Web | Vite, React 18, TypeScript, Tailwind, Konva | Vite、React、TS、Tailwind、Konva |
+| Web API | Express, Zod, dotenv | Express、Zod、环境变量 |
+| LLM (plugin) | **SiliconFlow · Qwen** | **硅基流动 · Qwen** |
+| LLM (web server) | xAI Grok (see `server/grokClient`) | xAI Grok（见 `server/`） |
 
-- **健康检查**：`GET /api/health`
-- **生成 UI 规格**：`POST /api/generate-ui`
+---
 
-请求体（示例）：
+## 🤝 Contributing / 贡献指南
 
-```json
-{
-  "productBrief": "为一个健身 App 设计 3 个页面：课程列表/课程详情/支付确认…",
-  "platform": "web",
-  "styleKeywords": "现代、克制、清爽、内容优先",
-  "screens": 3,
-  "primaryColor": "#1E293B",
-  "locale": "zh-CN",
-  "extraConstraints": "必须包含搜索与筛选"
-}
-```
+**EN** · Issues & PRs welcome. For the Figma plugin, test in **Development** mode after each change. For the web app, run `npm run lint` before submitting.
 
-成功返回（示例结构）：
+**中文** · 欢迎 Issue 与 PR。修改 Figma 插件后请在**开发模式**下自测；提交 Web 相关改动前建议执行 `npm run lint`。
 
-```json
-{
-  "ok": true,
-  "data": {
-    "version": "1.0",
-    "generatedAt": "2026-03-18T00:00:00.000Z",
-    "request": { "...": "..." },
-    "screens": [ { "id": "...", "name": "...", "size": { "width": 1440, "height": 900 }, "elements": [] } ],
-    "tutor": { "summary": "...", "keyDecisions": [], "layoutChecklist": [], "accessibilityChecklist": [], "nextSteps": [] }
-  }
-}
-```
+---
 
-### Prompt 工程与结构化 JSON（你可以从这里改“更像导师”）
+## 📄 License / 许可证
 
-- **schema/type（前后端共用）**：`shared/uiSpec.ts`
-  - `GenerateUiRequestSchema`：请求校验
-  - `UiTutorArtifactSchema`：模型输出校验（screens + elements + tutor）
-- **提示词模板**：`shared/prompts.ts`
-  - `SYSTEM_PROMPT_ZH`：系统提示词（导师角色 + 约束）
-  - `buildUserPrompt()`：把表单输入转成可控的 user prompt
+**MIT** (unless otherwise noted in subfolders / 除非子目录另有说明)
 
-后端会把 `UiTutorArtifactSchema` 转成 JSON Schema，作为 function calling 的 `parameters`，强制 Grok 输出结构化 JSON。
+---
 
-### 常见问题
+## 👤 Author / 作者
 
-- **为什么不在前端直接调用 Grok？**
-  - 因为浏览器里会暴露 `XAI_API_KEY`。本项目用 `server/` 做代理，前端只请求 `/api/*`。
-- **如何换模型？**
-  - 在 `.env` 设置 `XAI_MODEL=...`（默认已写在 `.env.example`）。
+**CHUNHAO031**
 
+- GitHub: [CHUNHAO031](https://github.com/CHUNHAO031)
+- Related repo · 相关仓库: [Intelligent-UI-Helper-0325](https://github.com/CHUNHAO031/Intelligent-UI-Helper-0325)
+
+---
+
+**Happy designing · 设计愉快** 🎨
