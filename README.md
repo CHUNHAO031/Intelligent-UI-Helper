@@ -1,15 +1,5 @@
 # ✨ Intelligent UI Helper / 智能 UI 导师
 
-<p align="center">
-  <a href="https://hamiaruru.github.io/Intelligent-UI-Helper/">
-    <img src="https://raw.githubusercontent.com/Hamiaruru/Intelligent-UI-Helper/main/pages/badges/live-demo.svg" alt="Live Demo" />
-  </a>
-  &nbsp;
-  <a href="https://hamiaruru.github.io/Intelligent-UI-Helper/presentation-deck.html">
-    <img src="https://raw.githubusercontent.com/Hamiaruru/Intelligent-UI-Helper/main/pages/badges/presentation-deck.svg" alt="Presentation Deck" />
-  </a>
-</p>
-
 **English** · A workspace that ships a **Figma plugin** powered by **Qwen** on **SiliconFlow**, plus an optional **web** UI tutor (Vite + React + Konva + Express).
 
 **中文** · 本仓库包含：基于 **硅基流动 SiliconFlow + Qwen** 的 **Figma 插件**，以及可选的 **Web 画布导师**（Vite + React + Konva + Express）。
