@@ -1,5 +1,9 @@
 # ✨ Intelligent UI Helper / 智能 UI 导师
 
+[![Homepage](https://img.shields.io/badge/Homepage-GitHub%20Pages-2563eb?style=for-the-badge)](https://chunhao031.github.io/Intelligent-UI-Helper/)
+[![Slide Deck](https://img.shields.io/badge/Slide%20Deck-Presentation-0ea5e9?style=for-the-badge)](https://chunhao031.github.io/Intelligent-UI-Helper/presentation-deck.html)
+[![YouTube](https://img.shields.io/badge/YouTube-Project%20Video-ff0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=bloI8D-9ATs)
+
 **English** · A workspace that ships a **Figma plugin** powered by **Qwen** on **SiliconFlow**, plus an optional **web** UI tutor (Vite + React + Konva + Express).
 
 **中文** · 本仓库包含：基于 **硅基流动 SiliconFlow + Qwen** 的 **Figma 插件**，以及可选的 **Web 画布导师**（Vite + React + Konva + Express）。
