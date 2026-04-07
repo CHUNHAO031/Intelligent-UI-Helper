@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afterglow · Biodesign MVP — Slide Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0f14;
+      --slide: #121a22;
+      --text: #e6edf3;
+      --muted: #8b9bab;
+      --teal: #2dd4bf;
+      --amber: #f59e0b;
+      --line: rgba(139, 155, 171, 0.22);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "DM Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+    .bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+      z-index: 50;
+      transition: width 0.3s ease;
+    }
+    .hint {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem;
+      color: var(--muted);
+      z-index: 51;
+    }
+    .deck {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px 44px;
+    }
+    .slide {
+      display: none;
+      width: min(1080px, 100%);
+      aspect-ratio: 16 / 9;
+      max-height: calc(100vh - 76px);
+      background: var(--slide);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: clamp(22px, 3.5vw, 40px);
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow: auto;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+    .slide.active { display: flex; }
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(700px 420px at 100% 0%, rgba(45, 212, 191, 0.06), transparent 50%);
+      pointer-events: none;
+      border-radius: 14px;
+    }
+    .slide > * { position: relative; z-index: 1; }
+    .num {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.65rem, 2.8vw, 2.45rem);
+      line-height: 1.12;
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+    h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.2rem, 2vw, 1.65rem);
+      margin: 0 0 14px;
+      font-weight: 600;
+    }
+    p, li {
+      font-size: clamp(0.88rem, 1.35vw, 1.02rem);
+      line-height: 1.5;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    ul { padding-left: 1.15em; margin: 6px 0 0; }
+    li { margin-bottom: 5px; }
+    .lead { color: var(--text); font-size: 1.02em; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(0.78rem, 1.2vw, 0.9rem);
+      margin-top: 8px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: rgba(45, 212, 191, 0.08);
+      color: var(--text);
+      font-weight: 600;
+    }
+    td { color: var(--muted); }
+    td strong { color: var(--text); }
+    .formula {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      background: rgba(0, 0, 0, 0.35);
+      border-left: 3px solid var(--amber);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #c5d0da;
+    }
+    .hook {
+      font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+      line-height: 1.55;
+      color: var(--text);
+      border-left: 3px solid var(--teal);
+      padding-left: 14px;
+      margin: 14px 0 0;
+      font-style: italic;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .okr-o {
+      color: var(--amber);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+    .okr-o:first-of-type { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="bar" id="bar"></div>
+  <div class="deck" id="deck" tabindex="0">
+    <!-- 1 -->
+    <section class="slide active">
+      <span class="num">1 / 14</span>
+      <p class="section-label">Biodesign MVP</p>
+      <h1>Afterglow<br /><span style="font-size: 0.5em; font-weight: 600; color: var(--muted);">公民科学 · 生物暴露量化 · 澳门语境</span></h1>
+      <p class="lead">依托大湾区电子供应链，以「生物暴露风险」叙事，将 IoT 监测升格为具有社会洞察力的 Biodesign 作品。</p>
+      <p>核心：非人类代理（城市感官）捕捉 PM2.5 / PM10 等信号；输出侧重<strong>脆弱人群语境下的暴露理解</strong>，而非单一数值展示。</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <span class="num">2 / 14</span>
+      <p class="section-label">二、中国本土化硬件采购清单</p>
+      <h2>MVP 成本目标：&lt; 300 元 / 台（淘宝 24h 级发货）</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>组件</th>
+            <th>推荐型号</th>
+            <th>预估单价</th>
+            <th>优势</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>核心传感器</strong></td>
+            <td>攀藤 Plantower <strong>PMS7003</strong></td>
+            <td>约 ¥85</td>
+            <td>国产激光颗粒物传感器常见选型，输出 PM2.5 / PM10 等（以数据手册为准）。</td>
+          </tr>
+          <tr>
+            <td><strong>微控制器</strong></td>
+            <td><strong>ESP32-C3</strong> Super Mini（超迷你版）</td>
+            <td>约 ¥12</td>
+            <td>体积小，内置 Wi‑Fi，便于对接点灯 / 阿里云等 IoT 平台。</td>
+          </tr>
+          <tr>
+            <td><strong>温湿度修正</strong></td>
+            <td>盛思锐 Sensirion <strong>SHT40</strong></td>
+            <td>约 ¥15</td>
+            <td>高湿环境下辅助修正 PM 读数漂移（沿海、春夏场景）。</td>
+          </tr>
+          <tr>
+            <td><strong>电源系统</strong></td>
+            <td>Type‑C 供电 / 18650 充放板</td>
+            <td>约 ¥10</td>
+            <td>便于公民科学家在阳台、窗台等场景快速部署。</td>
+          </tr>
+          <tr>
+            <td><strong>外壳</strong></td>
+            <td>3D 打印 / 本地回收饮料瓶改造</td>
+            <td>约 ¥0–5</td>
+            <td>契合 BDC「材料再利用」与低浪费叙事。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <span class="num">3 / 14</span>
+      <p class="section-label">三、一个月 MVP · OKR（1/2）</p>
+      <h2>目标与关键结果</h2>
+      <p class="okr-o">O1：构建基于国产元件的「城市感官」硬件网格</p>
+      <ul>
+        <li><strong>KR1（W1）：</strong>完成 3–5 台基于 <strong>PMS7003 + ESP32</strong> 的监测盒组装；通过 <strong>Blinker（点灯科技）</strong>或<strong>阿里云 IoT</strong>实现手机端实时查数。</li>
+        <li><strong>KR2（W1）：</strong>实现基于温湿度的<strong>数据补偿</strong>，修正 PM2.5 曲线；建立「澳门烟火日」<strong>环境背景基准</strong>（可与公开气象/AQ 数据对照）。</li>
+      </ul>
+      <p class="okr-o">O2：Afterglow Bio‑Risk 数字孪生映射平台</p>
+      <ul>
+        <li><strong>KR1（W2）：</strong>Python 将实时 PM2.5 转为<strong>相对风险 / 相对暴露</strong>层（可参考形式如 <em>RR ∝ f(PM2.5, 基准)</em>）；文档中注明假设与局限。</li>
+        <li><strong>KR2（W3）：</strong>基于 <strong>Leaflet</strong> 的交互式 Web 地图，呈现大型烟花活动后约 <strong>12 小时内</strong>颗粒物在社区尺度上的时空变化（漂移/扩散为叙事性表达，非流体力学仿真）。</li>
+      </ul>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <span class="num">4 / 14</span>
+      <p class="section-label">三、一个月 MVP · OKR（2/2）</p>
+      <h2>叙事与交付</h2>
+      <p class="okr-o">O3：符合 BDC 标准的叙事与展示包</p>
+      <ul>
+        <li><strong>KR1（W4）：</strong>约 1 分钟 Pitch 视频（HeyGen、剪映 AI 等均可）。叙事线：<strong>视觉盛宴 → 隐形生物暴露 → 众包地图作为系统性修复入口</strong>。</li>
+        <li><strong>KR2（W4）：</strong>约 12 页 Slide Deck：含面向<strong>老年等脆弱人群</strong>的暴露热力图语境，以及对<strong>低污染烟花 / 节庆政策</strong>的社会反思（Reflection）。</li>
+      </ul>
+      <p style="margin-top: 12px;">说明：路演中建议明确 <strong>教育 / 公民科学原型</strong>定位，避免过度医疗承诺。</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <span class="num">5 / 14</span>
+      <p class="section-label">四、四周进度表</p>
+      <h2>MVP 极速开发节奏</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>周次</th>
+            <th>阶段</th>
+            <th>关键产出物</th>
+            <th>避坑点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>W1</strong></td>
+            <td>硬件闭环</td>
+            <td>≥3 个可稳定上云的盒子</td>
+            <td>台间差异：多台 PMS7003 建议<strong>并排运行 ≥24h</strong>做相对校准。</td>
+          </tr>
+          <tr>
+            <td><strong>W2</strong></td>
+            <td>生物建模</td>
+            <td>肺部/脆弱人群<strong>暴露风险指数</strong>公式与说明文档</td>
+            <td>归因：单靠时间戳难以严格区分烟花与交通峰值，宜采用<strong>活动日历 + 气象辅助</strong>作情景标签。</td>
+          </tr>
+          <tr>
+            <td><strong>W3</strong></td>
+            <td>地图交互</td>
+            <td>澳门社区尺度污染<strong>时空演变</strong>地图</td>
+            <td>UI 叙事：图例优先表达<strong>生物暴露分档 / 受损语境</strong>，而非仅裸浓度彩虹条。</td>
+          </tr>
+          <tr>
+            <td><strong>W4</strong></td>
+            <td>最终包装</td>
+            <td>视频、PPT、规划文档</td>
+            <td>语境：可加入本地<strong>废弃物 / 节庆垃圾增量</strong>等公开统计，增强地域叙事深度。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <span class="num">6 / 14</span>
+      <p class="section-label">五、核心技术路径</p>
+      <h2>数据采集栈</h2>
+      <p class="formula">PMS7003（UART）→ ESP32（Wi‑Fi）→ Blinker MQTT Broker（或所选云平台等价链路）</p>
+      <p>固件侧统一：采样间隔、重连策略、时间同步方式；云端侧统一：设备 ID、字段命名与存储周期，便于下游 Python 与地图消费。</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <span class="num">7 / 14</span>
+      <p class="section-label">五、生物指标换算（MVP 建议表述）</p>
+      <h2>脆弱人群单次暴露剂量（示意）</h2>
+      <p>以<strong>相对暴露</strong>沟通，对标 WHO 等指南倍数并结合暴露时长（非临床诊断）：</p>
+      <div class="formula">
+        BioIndex = (PM<sub>2.5</sub> / PM<sub>ref</sub>) × Δt&nbsp;&nbsp;（小时）<br />
+        <span style="color: var(--muted); font-size: 0.9em;">PM<sub>ref</sub> 可取 WHO 指引或团队约定的对照浓度；输出建议分档（低 / 中 / 高）。</span>
+      </div>
+      <p>若引用流行病学相对风险形式，须补充<strong>文献来源、系数与适用边界</strong>，避免评委质疑「套公式」。</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <span class="num">8 / 14</span>
+      <p class="section-label">Leaflet 地图（与 OKR 对齐）</p>
+      <h2>交互地图要点</h2>
+      <ul>
+        <li>底图：OpenStreetMap / Carto 等<strong>免费瓦片</strong>，保留版权与 attribution。</li>
+        <li>点位：<code>circleMarker</code> 按暴露分档着色；弹窗展示时段均值与设备 ID。</li>
+        <li>12h 叙事：时间滑条或两段 JSON（活动中/活动后）切换，强调<strong>社区尺度可解释性</strong>。</li>
+      </ul>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <span class="num">9 / 14</span>
+      <p class="section-label">BDC 叙事</p>
+      <h2>为什么不是「纯 IoT」？</h2>
+      <div class="grid-2">
+        <div>
+          <p><strong>非人类代理</strong><br />传感器网络作为城市感官，记录肉眼不可见的化学负荷。</p>
+          <p><strong>系统性修复</strong><br />众包地图把私人感受与公共讨论连接，指向政策与节庆形态。</p>
+        </div>
+        <div>
+          <p><strong>数字孪生（叙事层）</strong><br />在数据层之上构建「可讨论的暴露情境」，而非仅仪表盘。</p>
+          <p><strong>伦理</strong><br />粗粒度位置、用途说明、非医疗免责声明。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide">
+      <span class="num">10 / 14</span>
+      <p class="section-label">叙事钩子</p>
+      <h2>一句话</h2>
+      <p class="hook">「煙花帶來了 15 分鐘的視覺盛宴，卻留下了 15 個小時的生物遺毒。我們用數字孿生技術，讓每一口呼吸都有跡可循。」</p>
+      <p class="hook" style="border-left-color: var(--amber); font-style: normal; margin-top: 16px;">「烟花带来了 15 分钟的视觉盛宴，却留下了 15 个小时的生物遗毒。我们用数字孪生技术，让每一口呼吸都有迹可循。」</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <span class="num">11 / 14</span>
+      <p class="section-label">Slide Deck 内容建议（对应 O3-KR2）</p>
+      <h2>12 页结构参考</h2>
+      <ol style="margin: 0; padding-left: 1.2em; color: var(--muted); line-height: 1.55; font-size: 0.92rem;">
+        <li>封面：项目名 + 一句价值主张</li>
+        <li>问题：节庆 spectacle 与颗粒物滞留</li>
+        <li>为何 Biodesign：暴露量化与非人类代理</li>
+        <li>硬件清单与成本（本章表格缩略）</li>
+        <li>系统架构：采集 → 云 → Python → 地图</li>
+        <li>补偿算法与「烟火日」基准</li>
+        <li>暴露指数定义与局限</li>
+        <li>地图 UI：分档图例与老年友好可读性</li>
+        <li>案例：12h 时间窗叙事（1 个社区）</li>
+        <li>政策反思：低污染烟花 / 替代庆典</li>
+        <li>伦理、数据治理与下一步</li>
+        <li>致谢 / Q&A</li>
+      </ol>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <span class="num">12 / 14</span>
+      <p class="section-label">两人团队提醒（可选）</p>
+      <h2>范围保护</h2>
+      <ul>
+        <li>地图首版优先：<strong>少点位 + 时间滑条 + 分档图例</strong>，再迭代「全岛轨迹」表述。</li>
+        <li>归因写「<strong>情景标签</strong>」而非因果断定；配套一页 Limitations。</li>
+        <li>视频与 Deck 可并行，但<strong>固定每周五一次可演示闭环</strong>，避免全部堆 W4。</li>
+      </ul>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <span class="num">13 / 14</span>
+      <p class="section-label">总结</p>
+      <h2>方案价值</h2>
+      <p class="lead">利用大湾区极强电子供应链，把可复制的低成本感知网格，接到「生物暴露与社会反思」的 Biodesign 框架上。</p>
+      <ul>
+        <li><strong>可交付：</strong>硬件上云 + 指数脚本 + Leaflet 叙事地图 + 1 分钟片 + 12 页 Deck。</li>
+        <li><strong>可辩护：</strong>方法透明、局限自陈、伦理前置。</li>
+      </ul>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <span class="num">14 / 14</span>
+      <p class="section-label">End</p>
+      <h1>谢谢</h1>
+      <p>Afterglow · Biodesign MVP Slide Deck</p>
+      <p style="margin-top: 20px; font-size: 0.85rem; color: var(--muted);">操作：点击或按 → ← 翻页；Home / End 首尾。</p>
+    </section>
+  </div>
+  <p class="hint">Click / ← → · 14 slides · 无视频 Prompt 条目</p>
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      let i = 0;
+      const bar = document.getElementById("bar");
+      const deck = document.getElementById("deck");
+
+      function show(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, j) => s.classList.toggle("active", j === i));
+        bar.style.width = ((i + 1) / slides.length) * 100 + "%";
+      }
+
+      document.body.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return;
+        show(i + 1);
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault();
+          show(i + 1);
+        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault();
+          show(i - 1);
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          show(0);
+        } else if (e.key === "End") {
+          e.preventDefault();
+          show(slides.length - 1);
+        }
+      });
+      show(0);
+      deck.focus();
+    })();
+  </script>
+</body>
+</html>

@@ -29,6 +29,7 @@ jobs:
           mkdir -p _site
           cp pages/index.html _site/index.html
           cp presentation-deck.html _site/presentation-deck.html
+          cp biodesign-mvp-slide-deck.html _site/biodesign-mvp-slide-deck.html
           touch _site/.nojekyll
 
       - name: Configure Pages
